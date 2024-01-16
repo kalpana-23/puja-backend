@@ -1,7 +1,11 @@
-require("dotenv").config();
+
 const express = require("express");
 const app = express();
 const cors = require("cors");
+const cookieParser = require("cookie-parser");
+const bodyParser = require("body-parser");
+const fileUpload = require("express-fileupload");
+const path = require("path");
 require("./db/conn")
 const PORT = 8000;
 const session = require("express-session");
@@ -10,12 +14,16 @@ const OAuth2Strategy = require("passport-google-oauth2").Strategy;
 const userdb = require("./models/userSchema.js")
 const errorMiddleware = require("./middleware/error");
 
+
+
 // Handling Uncaught Exception
 process.on("uncaughtException", (err) => {
     console.log(`Error: ${err.message}`);
     console.log(`Shutting down the server due to Uncaught Exception`);
     process.exit(1);
   });
+
+  require("dotenv").config();
 
 // Route import
 const product = require("./routes/productRoute");
@@ -30,6 +38,9 @@ app.use(cors({
     credentials:true
 }));
 app.use(express.json());
+app.use(cookieParser());
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(fileUpload());
 
 // setup session
 app.use(session({
