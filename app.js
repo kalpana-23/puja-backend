@@ -8,9 +8,18 @@ const session = require("express-session");
 const passport = require("passport");
 const OAuth2Strategy = require("passport-google-oauth2").Strategy;
 const userdb = require("./models/userSchema.js")
+const errorMiddleware = require("./middleware/error");
+
+// Handling Uncaught Exception
+process.on("uncaughtException", (err) => {
+    console.log(`Error: ${err.message}`);
+    console.log(`Shutting down the server due to Uncaught Exception`);
+    process.exit(1);
+  });
 
 // Route import
 const product = require("./routes/productRoute");
+
 const clientid = "693914567216-m2rtvi5c5mud2im8b5drusjfd0dfuu10.apps.googleusercontent.com"
 const clientsecret = "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"
 
@@ -100,8 +109,19 @@ app.get("/logout",(req,res,next)=>{
     })
 })
 
-
+// Middleware for Errors
+app.use(errorMiddleware);
 
 app.listen(PORT,()=>{
     console.log(`server start at port no ${PORT}`)
 })
+
+// Unhandled Promise Rejection
+process.on("unhandledRejection", (err) => {
+    console.log(`Error: ${err.message}`);
+    console.log(`Shutting down the server due to Unhandled Promise Rejection`);
+  
+    server.close(() => {
+      process.exit(1);
+    });
+  });
