@@ -7,7 +7,7 @@ const PORT = 8000;
 const session = require("express-session");
 const passport = require("passport");
 const OAuth2Strategy = require("passport-google-oauth2").Strategy;
-const userdb = require("./model/userSchema")
+const userdb = require("./models/userSchema.js")
 
 // Route import
 const product = require("./routes/productRoute");
